@@ -49,6 +49,7 @@ export const IQToolbar: React.FC<IQToolbarProps> = ({
     'ios17-dark': 'bg-[#282829]/95 border-[#3d3d3f] text-slate-100',
     'ios18-glass': 'bg-[#1e1e24]/80 backdrop-blur-xl border-white/10 text-white',
     'android17-material': 'bg-[#ede7f6] dark:bg-[#201a24] border-[#d1c4e9]/50 text-slate-800 dark:text-slate-100',
+    'custom': 'bg-slate-100/90 dark:bg-slate-850/90 backdrop-blur-md border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100',
   }[theme];
 
   return (

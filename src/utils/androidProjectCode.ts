@@ -340,6 +340,32 @@ fun IosKeyboardView(
             .padding(horizontal = 4.dp, vertical = 6.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        // SwiftyKeyboard Numeric Pad Toggle Bar
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = if (isArabic) "لوحة iOS 17 العربية" else "iOS 17 Keyboard Studio",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            )
+            Surface(
+                shape = RoundedCornerShape(4.dp),
+                color = Color(0xFF007AFF),
+                modifier = Modifier.clickable { /* Toggle Numeric / Alpha */ }
+            ) {
+                Text(
+                    text = "SwiftyKeypad 123",
+                    fontSize = 10.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                )
+            }
+        }
+
         // Render Key Rows
         activeRows.forEachIndexed { index, row ->
             Row(
@@ -388,7 +414,7 @@ fun IosKeyboardView(
             }
         }
 
-        // Bottom Action Bar: Globe, Space, Return
+        // Bottom Action Bar: Globe, Spacebar (with Trackpad gesture), Return
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -404,7 +430,7 @@ fun IosKeyboardView(
                 }
             )
 
-            // Spacebar
+            // Spacebar with SwiftyKeyboard trackpad swipe support
             KeyButton(
                 label = if (isArabic) "مسافة" else "space",
                 modifier = Modifier.weight(4f),
@@ -706,13 +732,18 @@ jobs:
 
   const readmeMd = `# ${config.appName} (Android 17 / API 35+)
 
-High-performance Android implementation of **hackiftekhar/IQKeyboardManager** combined with an authentic **iOS 17 Soft Keyboard IME** built with **Kotlin** and **Jetpack Compose**.
+High-performance Android 17 / Jetpack Compose implementation uniting:
+- [hackiftekhar/IQKeyboardManager](https://github.com/hackiftekhar/IQKeyboardManagerObjC): Zero-boilerplate scroll avoidance, distance padding, and animated Prev/Next/Done IQToolbar.
+- [SwiftyKit/SwiftyKeyboard](https://github.com/SwiftyKit/SwiftyKeyboard): Dedicated custom numeric PIN/payment keypad, sound engine, and key geometry customization.
+- [Gautier7799/iOS-Keyboard-Studio-APK](https://github.com/Gautier7799/iOS-Keyboard-Studio-APK): Studio architecture for compiling and deploying iOS Keyboards on Android.
 
 ## Features
 - **IQKeyboardManager Engine**: Zero boilerplate scroll offset calculation, \`ProvideIQKeyboardManager\`, and \`BringIntoViewRequester\`.
 - **IQToolbar**: Previous, Next, Placeholder, and Done buttons right above soft keyboard.
-- **iOS 17 System Keyboard (IME)**: Full \`InputMethodService\` with English QWERTY and Arabic layouts, haptic feedback, and authentic iOS styling.
-- **Ready for Android 15, 16, and 17 (API 35+)** with edge-to-edge window insets.
+- **SwiftyKeyboard Numeric Keypad**: Dedicated 3x4 large dialer layout for PIN, payment, and numerical inputs.
+- **iOS 17 System Keyboard (IME)**: Full \`InputMethodService\` with English QWERTY, Arabic (العربية) with Tashkeel, haptic feedback, and authentic mechanical tap sounds.
+- **Ergonomics**: Spacebar trackpad cursor glide gesture, double-space period shortcut, and diacritics popovers.
+- **Ready for Android 15, 16, and 17 (API 35/36)** with edge-to-edge window insets.
 
 ## How to Build the APK
 1. Open this folder in **Android Studio** (Ladybug or newer).

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
-  // IQKeyboardManager state
+  // IQKeyboardManager & SwiftyKeyboard state
   const [settings, setSettings] = useState<IQKeyboardSettings>({
     enabled: true,
     distanceFromTextField: 16,
@@ -31,10 +31,24 @@ export default function App() {
     toolbarDoneBarButtonItemText: 'Done',
     toolbarTintColor: '#007aff',
     shouldPlayInputClicks: true,
+    soundType: 'ios',
     enableHaptics: true,
     theme: 'ios17-light',
+    customTheme: {
+      keyRadius: 6,
+      keyHeight: 42,
+      bg: '#1e1b2e',
+      keyBg: '#2f2b4a',
+      textColor: '#ffffff',
+      specialKeyBg: '#443e68',
+      returnColor: '#7c3aed',
+      glassBlur: true,
+    },
     deviceType: 'iphone16',
     language: 'ar', // default to Arabic layout as user requested in Arabic
+    doubleSpaceShortcut: true,
+    trackpadMode: true,
+    showDiacriticsOnLongPress: true,
   });
 
   // Android APK configuration
@@ -91,7 +105,7 @@ export default function App() {
         </div>
 
         {/* Zone 2: Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 text-xs font-medium text-slate-600 dark:text-slate-400">
+        <nav className="hidden lg:flex items-center gap-5 text-xs font-medium text-slate-600 dark:text-slate-400">
           <button
             type="button"
             onClick={() => {
@@ -109,6 +123,7 @@ export default function App() {
           >
             {settings.language === 'en' ? 'Switch to العربية' : 'التبديل إلى English'}
           </button>
+
           <button
             type="button"
             onClick={() => setIsCodeModalOpen(true)}
@@ -116,14 +131,24 @@ export default function App() {
           >
             Kotlin Architecture
           </button>
+
           <a
-            href="https://github.com/hackiftekhar/IQKeyboardManagerObjC"
+            href="https://github.com/Gautier7799/iOS-Keyboard-Studio-APK"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold"
+          >
+            <Github className="w-3.5 h-3.5" />
+            <span>iOS Keyboard Studio APK</span>
+          </a>
+
+          <a
+            href="https://github.com/SwiftyKit/SwiftyKeyboard"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 flex items-center gap-1"
           >
-            <Github className="w-3.5 h-3.5" />
-            <span>GitHub Repository</span>
+            <span>SwiftyKeyboard</span>
           </a>
         </nav>
 
@@ -145,19 +170,21 @@ export default function App() {
         {/* Intro Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
           <div className="max-w-3xl">
-            <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 font-semibold mb-1">
-              <span>hackiftekhar/IQKeyboardManager Port</span>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-blue-600 dark:text-blue-400 font-semibold mb-1">
+              <span>IQKeyboardManager Port</span>
               <span aria-hidden="true">·</span>
-              <span>iOS 17 Keyboard IME</span>
+              <span>SwiftyKeyboard Custom Keypad</span>
               <span aria-hidden="true">·</span>
-              <span>Android 17 Jetpack Compose</span>
+              <span>iOS-Keyboard-Studio-APK</span>
+              <span aria-hidden="true">·</span>
+              <span>Android 17 Compose</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Professional iOS Keyboard & Android 17 APK Builder
+              iOS 17 Keyboard Studio & Android 17 APK Engine
             </h1>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Complete zero-boilerplate keyboard handling: automatic field avoidance, animated Previous/Next/Done IQToolbar, 
-              touch-outside dismissal, authentic iOS 17 keyboard with Arabic & English layouts, and compile-ready Kotlin project export.
+              Unifying <strong>IQKeyboardManager</strong> insets avoidance & auto-toolbar with <strong>SwiftyKeyboard</strong> 
+              numeric PIN keypad, acoustic profiles, spacebar trackpad cursor glide, and compile-ready Kotlin Android APK export.
             </p>
           </div>
 
@@ -282,8 +309,8 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-800 py-6 px-6 lg:px-12 mt-12 bg-white dark:bg-slate-900 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span>Based on</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <span>Powered by</span>
             <a
               href="https://github.com/hackiftekhar/IQKeyboardManagerObjC"
               target="_blank"
@@ -292,7 +319,24 @@ export default function App() {
             >
               hackiftekhar/IQKeyboardManager
             </a>
-            <span>by Iftekhar Qurashi</span>
+            <span>·</span>
+            <a
+              href="https://github.com/SwiftyKit/SwiftyKeyboard"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline font-semibold"
+            >
+              SwiftyKit/SwiftyKeyboard
+            </a>
+            <span>·</span>
+            <a
+              href="https://github.com/Gautier7799/iOS-Keyboard-Studio-APK"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline font-semibold"
+            >
+              Gautier7799/iOS-Keyboard-Studio-APK
+            </a>
           </div>
           <div className="flex items-center gap-4">
             <button

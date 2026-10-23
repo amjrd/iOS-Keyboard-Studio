@@ -154,6 +154,16 @@ export const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({
     }));
   };
 
+  const handleMoveCursor = (direction: 'left' | 'right') => {
+    if (!focusedFieldId) return;
+    const input = document.getElementById(focusedFieldId) as HTMLInputElement | HTMLTextAreaElement | null;
+    if (input && typeof input.selectionStart === 'number' && typeof input.selectionEnd === 'number') {
+      const pos = input.selectionStart;
+      const newPos = direction === 'left' ? Math.max(0, pos - 1) : Math.min(input.value.length, pos + 1);
+      input.setSelectionRange(newPos, newPos);
+    }
+  };
+
   const handleReturn = () => {
     if (hasNext) {
       handleNavigateNext();
@@ -213,7 +223,7 @@ export const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({
             ) : (
               <div className="w-24 h-6 rounded-full bg-black flex items-center justify-between px-2 text-[9px] text-slate-400">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="truncate">IQKeyboard</span>
+                <span className="truncate">SwiftyStudio</span>
               </div>
             )}
 
@@ -294,11 +304,16 @@ export const DeviceSimulator: React.FC<DeviceSimulatorProps> = ({
             <IosKeyboard
               language={settings.language}
               theme={settings.theme}
+              customTheme={settings.customTheme}
               soundEnabled={settings.shouldPlayInputClicks}
+              soundType={settings.soundType}
               hapticsEnabled={settings.enableHaptics}
+              doubleSpaceShortcut={settings.doubleSpaceShortcut}
+              trackpadModeEnabled={settings.trackpadMode}
               onKeyPress={handleCharInput}
               onBackspace={handleBackspace}
               onReturn={handleReturn}
+              onMoveCursor={handleMoveCursor}
               onLanguageChange={(lang) =>
                 onUpdateSettings((prev) => ({ ...prev, language: lang }))
               }
