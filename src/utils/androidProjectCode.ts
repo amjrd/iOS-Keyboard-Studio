@@ -756,6 +756,70 @@ High-performance Android 17 / Jetpack Compose implementation uniting:
    \`app/build/outputs/apk/release/app-release.apk\`
 `;
 
+  const rootBuildGradleKts = `// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id("com.android.application") version "8.7.2" apply false
+    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" apply false
+}
+`;
+
+  const settingsGradleKts = `pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\\\.android.*")
+                includeGroupByRegex("com\\\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "${config.appName}"
+include(":app")
+`;
+
+  const gradleProperties = `org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+android.useAndroidX=true
+kotlin.code.style=official
+android.nonTransitiveRClass=true
+`;
+
+  const gradleWrapperProperties = `distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\\://services.gradle.org/distributions/gradle-8.11-bin.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+`;
+
+  const gitignoreContent = `*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+app/build/
+`;
+
   return {
     packagePath,
     iqKeyboardManagerKotlin,
@@ -765,6 +829,11 @@ High-performance Android 17 / Jetpack Compose implementation uniting:
     androidManifestXml,
     methodXml,
     buildGradleKts,
+    rootBuildGradleKts,
+    settingsGradleKts,
+    gradleProperties,
+    gradleWrapperProperties,
+    gitignoreContent,
     githubActionsYml,
     readmeMd,
   };
@@ -775,7 +844,12 @@ export const generateAndDownloadZip = async (config: AndroidBuildConfig) => {
   const zip = new JSZip();
 
   // Root project files
+  zip.file('.gitignore', files.gitignoreContent);
   zip.file('README.md', files.readmeMd);
+  zip.file('build.gradle.kts', files.rootBuildGradleKts);
+  zip.file('settings.gradle.kts', files.settingsGradleKts);
+  zip.file('gradle.properties', files.gradleProperties);
+  zip.file('gradle/wrapper/gradle-wrapper.properties', files.gradleWrapperProperties);
   zip.file('.github/workflows/build-apk.yml', files.githubActionsYml);
   zip.file('gradlew', '#!/usr/bin/env sh\nexec gradle "$@"\n');
 
@@ -795,7 +869,7 @@ export const generateAndDownloadZip = async (config: AndroidBuildConfig) => {
   const downloadUrl = URL.createObjectURL(content);
   const a = document.createElement('a');
   a.href = downloadUrl;
-  a.download = `${config.appName.toLowerCase().replace(/\s+/g, '-')}-android17-project.zip`;
+  a.download = `iOS-Keyboard-Studio-APK-main.zip`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

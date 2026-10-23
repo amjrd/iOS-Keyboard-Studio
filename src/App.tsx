@@ -9,6 +9,7 @@ import { ApkBuilderModal } from './components/ApkBuilderModal';
 import { AndroidCodeViewer } from './components/AndroidCodeViewer';
 import { WorkflowActionModal } from './components/WorkflowActionModal';
 import { DirectApkDownloadModal } from './components/DirectApkDownloadModal';
+import { GithubRepoExplorer } from './components/GithubRepoExplorer';
 import { generateAndDownloadZip } from './utils/androidProjectCode';
 import {
   Keyboard,
@@ -21,9 +22,14 @@ import {
   Shield,
   Zap,
   GitBranch,
+  FolderGit2,
+  ExternalLink,
 } from 'lucide-react';
 
 export default function App() {
+  // Main View Mode: GitHub Repo Explorer vs Phone Simulator
+  const [viewMode, setViewMode] = useState<'github_repo' | 'simulator'>('github_repo');
+
   // IQKeyboardManager & SwiftyKeyboard state
   const [settings, setSettings] = useState<IQKeyboardSettings>({
     enabled: true,
@@ -48,16 +54,16 @@ export default function App() {
       glassBlur: true,
     },
     deviceType: 'iphone16',
-    language: 'ar', // default to Arabic layout as user requested in Arabic
+    language: 'ar',
     doubleSpaceShortcut: true,
     trackpadMode: true,
     showDiacriticsOnLongPress: true,
   });
 
-  // Android APK configuration
+  // Android APK configuration targeting Gautier7799/iOS-Keyboard-Studio-APK
   const [androidConfig, setAndroidConfig] = useState<AndroidBuildConfig>({
-    appName: 'IQKeyboard Pro',
-    packageName: 'com.hackiftekhar.iqkeyboard.android',
+    appName: 'iOS Keyboard Studio',
+    packageName: 'com.gautier.ioskeyboard',
     versionName: '1.0.0',
     versionCode: 1,
     targetSdk: 35,
@@ -84,7 +90,7 @@ export default function App() {
 
   const handleDownloadZip = async () => {
     await generateAndDownloadZip(androidConfig);
-    showToast('Project ZIP downloaded! Ready for Android Studio.');
+    showToast('تم تحميل كود المستودع بالكامل (.zip) لرفعه على GitHub!');
   };
 
   return (
@@ -102,10 +108,10 @@ export default function App() {
         {/* Zone 1: Brand Wordmark */}
         <div className="flex items-center gap-2.5 whitespace-nowrap shrink-0">
           <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <Keyboard className="w-4 h-4 stroke-[2.5]" />
+            <Github className="w-4 h-4" />
           </div>
           <span className="text-base font-bold tracking-tight text-slate-900 dark:text-white">
-            IQKeyboard Pro
+            iOS-Keyboard-Studio-APK
           </span>
         </div>
 
@@ -113,28 +119,28 @@ export default function App() {
         <nav className="hidden lg:flex items-center gap-5 text-xs font-medium text-slate-600 dark:text-slate-400">
           <button
             type="button"
-            onClick={() => {
-              setSettings((prev) => ({
-                ...prev,
-                language: prev.language === 'en' ? 'ar' : 'en',
-              }));
-              showToast(
-                `Keyboard language switched to ${
-                  settings.language === 'en' ? 'Arabic (العربية)' : 'English'
-                }`
-              );
-            }}
-            className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0"
+            onClick={() => setViewMode('github_repo')}
+            className={`transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+              viewMode === 'github_repo'
+                ? 'text-blue-600 dark:text-blue-400 font-bold'
+                : 'hover:text-slate-900 dark:hover:text-white'
+            }`}
           >
-            {settings.language === 'en' ? 'Switch to العربية' : 'التبديل إلى English'}
+            <FolderGit2 className="w-3.5 h-3.5" />
+            <span>ملفات المستودع (GitHub Files)</span>
           </button>
 
           <button
             type="button"
-            onClick={() => setIsCodeModalOpen(true)}
-            className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0"
+            onClick={() => setViewMode('simulator')}
+            className={`transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+              viewMode === 'simulator'
+                ? 'text-blue-600 dark:text-blue-400 font-bold'
+                : 'hover:text-slate-900 dark:hover:text-white'
+            }`}
           >
-            Kotlin Architecture
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>المحاكي التفاعلي (Preview)</span>
           </button>
 
           <button
@@ -143,26 +149,17 @@ export default function App() {
             className="hover:text-purple-600 dark:hover:text-purple-400 text-purple-600 dark:text-purple-400 font-semibold transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5"
           >
             <GitBranch className="w-3.5 h-3.5" />
-            <span>Workflow Actions</span>
+            <span>Workflow Actions (CI/CD)</span>
           </button>
 
           <a
             href="https://github.com/Gautier7799/iOS-Keyboard-Studio-APK"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold"
+            className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 flex items-center gap-1 font-semibold"
           >
-            <Github className="w-3.5 h-3.5" />
-            <span>Studio APK Repo</span>
-          </a>
-
-          <a
-            href="https://github.com/SwiftyKit/SwiftyKeyboard"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 flex items-center gap-1"
-          >
-            <span>SwiftyKeyboard</span>
+            <span>GitHub Repo</span>
+            <ExternalLink className="w-3 h-3" />
           </a>
         </nav>
 
@@ -170,183 +167,159 @@ export default function App() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
-            onClick={() => setIsDirectApkModalOpen(true)}
-            className="px-3.5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-all shadow-md shadow-emerald-600/20 active:scale-95 whitespace-nowrap shrink-0 flex items-center gap-1.5"
+            onClick={handleDownloadZip}
+            className="px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-95 whitespace-nowrap shrink-0 flex items-center gap-1.5"
           >
             <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>تحميل APK مباشر</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsApkModalOpen(true)}
-            className="px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-95 whitespace-nowrap shrink-0 flex items-center gap-1.5"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Build Suite</span>
+            <span>تحميل ملفات المستودع (ZIP)</span>
           </button>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-8">
-        {/* Intro Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6">
+        {/* Intro Header focused on GitHub Repo */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
           <div className="max-w-3xl">
             <div className="flex flex-wrap items-center gap-2 text-xs text-blue-600 dark:text-blue-400 font-semibold mb-1">
-              <span>IQKeyboardManager Port</span>
+              <span>https://github.com/Gautier7799/iOS-Keyboard-Studio-APK</span>
               <span aria-hidden="true">·</span>
-              <span>SwiftyKeyboard Custom Keypad</span>
+              <span>hackiftekhar/IQKeyboardManager Port</span>
               <span aria-hidden="true">·</span>
-              <span>iOS-Keyboard-Studio-APK</span>
-              <span aria-hidden="true">·</span>
-              <span>Android 17 Compose</span>
+              <span>SwiftyKit/SwiftyKeyboard</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              iOS 17 Keyboard Studio & Android 17 APK Engine
+              بناء لوحة مفاتيح iOS 17 لأندرويد على منصة GitHub
             </h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Unifying <strong>IQKeyboardManager</strong> insets avoidance & auto-toolbar with <strong>SwiftyKeyboard</strong> 
-              numeric PIN keypad, acoustic profiles, spacebar trackpad cursor glide, and direct installable APK generator.
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              تم تجهيز وتنظيم كامل ملفات المشروع المصدرية (Kotlin & Jetpack Compose & XML & Gradle) بالإضافة إلى سير عمل{' '}
+              <strong>GitHub Actions</strong> لتوليد ملف الـ <strong>APK</strong> تلقائياً عند رفعه إلى مستودعك.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          {/* Quick Segmented Mode Switcher */}
+          <div className="flex items-center p-1 bg-slate-200 dark:bg-slate-800 rounded-xl gap-1 shrink-0">
             <button
               type="button"
-              onClick={() => setIsDirectApkModalOpen(true)}
-              className="px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-2 shadow-lg shadow-emerald-900/30 active:scale-95"
+              onClick={() => setViewMode('github_repo')}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                viewMode === 'github_repo'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              }`}
             >
-              <Download className="w-4 h-4 stroke-[2.5]" />
-              <span>تحميل APK مباشرة (.apk)</span>
+              <FolderGit2 className="w-3.5 h-3.5" />
+              <span>ملفات المستودع (GitHub)</span>
             </button>
+
             <button
               type="button"
-              onClick={() => setIsWorkflowModalOpen(true)}
-              className="px-3 py-2 text-xs font-semibold rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 transition-colors flex items-center gap-1.5 shadow-sm"
+              onClick={() => setViewMode('simulator')}
+              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                viewMode === 'simulator'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+              }`}
             >
-              <GitBranch className="w-3.5 h-3.5" />
-              <span>Workflow Actions</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleDownloadZip}
-              className="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-white transition-colors flex items-center gap-1.5 shadow-sm"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Project ZIP</span>
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>المحاكي التفاعلي</span>
             </button>
           </div>
         </div>
 
-        {/* 2-Column Desktop Grid: Left is Phone Simulator, Right is Config & Tech Specs */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Column: Interactive Hardware Simulator (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col items-center">
-            <DeviceSimulator
-              settings={settings}
-              onUpdateSettings={setSettings}
-              onShowSuccessAlert={showToast}
-            />
-            <p className="mt-3 text-xs text-slate-400 text-center max-w-xs">
-              Tap any input field above to trigger the iOS 17 keyboard, sound clicks, and IQKeyboardManager insets calculation.
-            </p>
-          </div>
-
-          {/* Right Column: Settings & Architecture & APK Build Pipeline (7 cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Live Configuration Panel */}
-            <IQManagerConfigPanel
-              settings={settings}
-              onChange={setSettings}
-              onOpenApkModal={() => setIsApkModalOpen(true)}
-              onOpenCodeModal={() => setIsCodeModalOpen(true)}
+        {/* PRIMARY VIEW 1: GitHub Repository Code Explorer */}
+        {viewMode === 'github_repo' && (
+          <div className="space-y-6">
+            <GithubRepoExplorer
+              config={androidConfig}
+              onOpenWorkflow={() => setIsWorkflowModalOpen(true)}
+              onOpenDirectApk={() => setIsDirectApkModalOpen(true)}
+              onShowToast={showToast}
             />
 
-            {/* Architecture Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-                <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
-                  <Zap className="w-4 h-4" />
+            {/* Workflow Action Highlight Banner */}
+            <div className="p-4 rounded-2xl bg-purple-950/30 border border-purple-800/40 text-purple-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-purple-600 text-white shrink-0">
+                  <GitBranch className="w-5 h-5" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white">
-                  Zero Boilerplate Insets
-                </h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Automatically measures focused field positions with <code>BringIntoViewRequester</code> and animates view offsets above the IME.
-                </p>
+                <div>
+                  <h4 className="text-xs font-bold text-white">
+                    كيف يقوم GitHub ببناء ملف الـ APK تلقائياً؟
+                  </h4>
+                  <p className="text-[11px] text-purple-300 mt-0.5">
+                    ملف <code>.github/workflows/build-apk.yml</code> المرفق بالمشروع يقوم بتشغيل خوادم GitHub المجانية لتجميع كود الـ Kotlin وتوقيع الـ APK ونشره في Releases.
+                  </p>
+                </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-                <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center">
-                  <Layers className="w-4 h-4" />
-                </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white">
-                  Automated IQToolbar
-                </h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Previous & Next arrow chevrons to cycle between fields effortlessly without touching, plus auto placeholder and Done button.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-                  <Shield className="w-4 h-4" />
-                </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white">
-                  Android 17 IME Service
-                </h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Real <code>InputMethodService</code> implementation ready to install and activate across all Android apps.
-                </p>
-              </div>
-            </div>
-
-            {/* Comparison Box: Without vs With IQKeyboardManager */}
-            <div className="p-5 rounded-2xl bg-slate-900 text-white border border-slate-800 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold">
-                  Why IQKeyboardManager is Essential
-                </h3>
-                <span className="text-xs text-blue-400 font-mono">hackiftekhar/IQKeyboardManager</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="p-3.5 rounded-xl bg-red-950/30 border border-red-900/40 text-red-200 space-y-1.5">
-                  <span className="font-bold text-red-400 block">❌ Without IQKeyboardManager</span>
-                  <ul className="space-y-1 text-slate-300 text-[11px] list-disc list-inside">
-                    <li>Bottom input fields are hidden behind the soft keyboard</li>
-                    <li>User cannot see what they are typing in long forms</li>
-                    <li>Primary "Submit" and "Save" buttons are completely covered</li>
-                    <li>No easy way to jump between form fields without manual scrolling</li>
-                  </ul>
-                </div>
-
-                <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-900/40 text-emerald-200 space-y-1.5">
-                  <span className="font-bold text-emerald-400 block">✅ With IQKeyboardManager</span>
-                  <ul className="space-y-1 text-slate-300 text-[11px] list-disc list-inside">
-                    <li>Screen smoothly animates up to reveal the focused field</li>
-                    <li>Customizable distance padding (e.g. 16px) above keyboard</li>
-                    <li>Integrated IQToolbar with Previous, Next, and Done actions</li>
-                    <li>Tapping background instantly dismisses keyboard smoothly</li>
-                  </ul>
-                </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsWorkflowModalOpen(true)}
+                  className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-colors"
+                >
+                  معاينة سير العمل (CI/CD)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsDirectApkModalOpen(true)}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
+                >
+                  تحميل APK مباشر
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* PRIMARY VIEW 2: Interactive Hardware & Keyboard Simulator */}
+        {viewMode === 'simulator' && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Column: Interactive Hardware Simulator (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col items-center">
+              <DeviceSimulator
+                settings={settings}
+                onUpdateSettings={setSettings}
+                onShowSuccessAlert={showToast}
+              />
+              <p className="mt-3 text-xs text-slate-400 text-center max-w-xs">
+                اختبار عملي لنتائج كود كوتلن: لوحة مفاتيح iOS 17 العربية والإنجليزية ومحرك تجنب الحجب التلقائي IQKeyboardManager.
+              </p>
+            </div>
+
+            {/* Right Column: Settings & Architecture & APK Build Pipeline (7 cols) */}
+            <div className="lg:col-span-7 space-y-6">
+              <IQManagerConfigPanel
+                settings={settings}
+                onChange={setSettings}
+                onOpenApkModal={() => setIsApkModalOpen(true)}
+                onOpenCodeModal={() => setIsCodeModalOpen(true)}
+              />
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-800 py-6 px-6 lg:px-12 mt-12 bg-white dark:bg-slate-900 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            <span>Powered by</span>
+            <span>Target Repository:</span>
+            <a
+              href="https://github.com/Gautier7799/iOS-Keyboard-Studio-APK"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline font-bold"
+            >
+              Gautier7799/iOS-Keyboard-Studio-APK
+            </a>
+            <span>·</span>
             <a
               href="https://github.com/hackiftekhar/IQKeyboardManagerObjC"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline font-semibold"
+              className="text-slate-600 dark:text-slate-400 hover:underline"
             >
               hackiftekhar/IQKeyboardManager
             </a>
@@ -355,34 +328,27 @@ export default function App() {
               href="https://github.com/SwiftyKit/SwiftyKeyboard"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline font-semibold"
+              className="text-slate-600 dark:text-slate-400 hover:underline"
             >
               SwiftyKit/SwiftyKeyboard
             </a>
-            <span>·</span>
-            <a
-              href="https://github.com/Gautier7799/iOS-Keyboard-Studio-APK"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline font-semibold"
-            >
-              Gautier7799/iOS-Keyboard-Studio-APK
-            </a>
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={() => setIsCodeModalOpen(true)}
-              className="hover:text-slate-800 dark:hover:text-white transition-colors"
+              onClick={handleDownloadZip}
+              className="hover:text-slate-800 dark:hover:text-white transition-colors font-semibold"
             >
-              Kotlin Codebase
+              تحميل ملفات GitHub (ZIP)
             </button>
+            <span>·</span>
             <button
               type="button"
-              onClick={() => setIsApkModalOpen(true)}
-              className="hover:text-slate-800 dark:hover:text-white transition-colors"
+              onClick={() => setIsWorkflowModalOpen(true)}
+              className="hover:text-slate-800 dark:hover:text-white transition-colors font-semibold text-purple-600 dark:text-purple-400"
             >
-              APK Build Console
+              Workflow Actions
             </button>
           </div>
         </div>
