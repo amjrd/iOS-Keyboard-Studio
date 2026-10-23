@@ -8,6 +8,7 @@ import { IQManagerConfigPanel } from './components/IQManagerConfigPanel';
 import { ApkBuilderModal } from './components/ApkBuilderModal';
 import { AndroidCodeViewer } from './components/AndroidCodeViewer';
 import { WorkflowActionModal } from './components/WorkflowActionModal';
+import { DirectApkDownloadModal } from './components/DirectApkDownloadModal';
 import { generateAndDownloadZip } from './utils/androidProjectCode';
 import {
   Keyboard,
@@ -73,6 +74,7 @@ export default function App() {
   const [isApkModalOpen, setIsApkModalOpen] = useState(false);
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   const [isWorkflowModalOpen, setIsWorkflowModalOpen] = useState(false);
+  const [isDirectApkModalOpen, setIsDirectApkModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -165,14 +167,23 @@ export default function App() {
         </nav>
 
         {/* Zone 3: Primary Action CTA */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsDirectApkModalOpen(true)}
+            className="px-3.5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-all shadow-md shadow-emerald-600/20 active:scale-95 whitespace-nowrap shrink-0 flex items-center gap-1.5"
+          >
+            <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>تحميل APK مباشر</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setIsApkModalOpen(true)}
-            className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-95 whitespace-nowrap shrink-0 flex items-center gap-1.5"
+            className="px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-600/20 active:scale-95 whitespace-nowrap shrink-0 flex items-center gap-1.5"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Build Android APK</span>
+            <span>Build Suite</span>
           </button>
         </div>
       </header>
@@ -196,15 +207,23 @@ export default function App() {
             </h1>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               Unifying <strong>IQKeyboardManager</strong> insets avoidance & auto-toolbar with <strong>SwiftyKeyboard</strong> 
-              numeric PIN keypad, acoustic profiles, spacebar trackpad cursor glide, and compile-ready Kotlin Android APK export.
+              numeric PIN keypad, acoustic profiles, spacebar trackpad cursor glide, and direct installable APK generator.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
+              onClick={() => setIsDirectApkModalOpen(true)}
+              className="px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-2 shadow-lg shadow-emerald-900/30 active:scale-95"
+            >
+              <Download className="w-4 h-4 stroke-[2.5]" />
+              <span>تحميل APK مباشرة (.apk)</span>
+            </button>
+            <button
+              type="button"
               onClick={() => setIsWorkflowModalOpen(true)}
-              className="px-3.5 py-2 text-xs font-semibold rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 transition-colors flex items-center gap-1.5 shadow-sm"
+              className="px-3 py-2 text-xs font-semibold rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 transition-colors flex items-center gap-1.5 shadow-sm"
             >
               <GitBranch className="w-3.5 h-3.5" />
               <span>Workflow Actions</span>
@@ -212,18 +231,10 @@ export default function App() {
             <button
               type="button"
               onClick={handleDownloadZip}
-              className="px-3.5 py-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-white transition-colors flex items-center gap-1.5 shadow-sm"
+              className="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-white transition-colors flex items-center gap-1.5 shadow-sm"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Download Project ZIP</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsApkModalOpen(true)}
-              className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition-colors flex items-center gap-1.5 shadow-sm"
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>Compile APK</span>
+              <span>Project ZIP</span>
             </button>
           </div>
         </div>
@@ -404,6 +415,16 @@ export default function App() {
         config={androidConfig}
         isOpen={isWorkflowModalOpen}
         onClose={() => setIsWorkflowModalOpen(false)}
+      />
+
+      <DirectApkDownloadModal
+        config={androidConfig}
+        isOpen={isDirectApkModalOpen}
+        onClose={() => setIsDirectApkModalOpen(false)}
+        onOpenWorkflow={() => {
+          setIsDirectApkModalOpen(false);
+          setIsWorkflowModalOpen(true);
+        }}
       />
     </div>
   );

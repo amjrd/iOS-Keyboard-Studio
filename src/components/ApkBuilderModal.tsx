@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AndroidBuildConfig } from '../types/keyboard';
 import { generateAndDownloadZip } from '../utils/androidProjectCode';
+import { buildAndDownloadDirectApk } from '../utils/apkGenerator';
 import confetti from 'canvas-confetti';
 import {
   Terminal,
@@ -99,6 +100,10 @@ export const ApkBuilderModal: React.FC<ApkBuilderModalProps> = ({
 
   const handleDownloadZip = async () => {
     await generateAndDownloadZip(config);
+  };
+
+  const handleDownloadDirectApk = async () => {
+    await buildAndDownloadDirectApk(config);
   };
 
   return (
@@ -220,11 +225,20 @@ export const ApkBuilderModal: React.FC<ApkBuilderModalProps> = ({
 
               <button
                 type="button"
+                onClick={handleDownloadDirectApk}
+                className="px-4 py-2.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-2 transition-all shadow-md active:scale-95"
+              >
+                <Download className="w-4 h-4 stroke-[2.5]" />
+                <span>تحميل ملف APK مباشرة (.apk)</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={handleDownloadZip}
-                className="px-4 py-2.5 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 transition-all shadow-md active:scale-95"
+                className="px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-2 transition-all active:scale-95"
               >
                 <Download className="w-4 h-4" />
-                <span>Download Android Studio ZIP</span>
+                <span>Download Studio ZIP</span>
               </button>
             </div>
 
@@ -282,8 +296,16 @@ export const ApkBuilderModal: React.FC<ApkBuilderModalProps> = ({
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   <button
                     type="button"
+                    onClick={handleDownloadDirectApk}
+                    className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors flex items-center gap-1.5 shadow-sm text-xs"
+                  >
+                    <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>تحميل ملف APK مباشرة (.apk)</span>
+                  </button>
+                  <button
+                    type="button"
                     onClick={handleDownloadZip}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-colors flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold transition-colors flex items-center gap-1.5 text-xs"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download Project ZIP ({config.appName})</span>
