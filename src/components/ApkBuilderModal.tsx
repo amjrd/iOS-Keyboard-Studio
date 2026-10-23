@@ -21,6 +21,7 @@ interface ApkBuilderModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenCodeViewer: () => void;
+  onOpenWorkflowModal?: () => void;
 }
 
 export const ApkBuilderModal: React.FC<ApkBuilderModalProps> = ({
@@ -29,6 +30,7 @@ export const ApkBuilderModal: React.FC<ApkBuilderModalProps> = ({
   isOpen,
   onClose,
   onOpenCodeViewer,
+  onOpenWorkflowModal,
 }) => {
   const [isBuilding, setIsBuilding] = useState(false);
   const [buildLogs, setBuildLogs] = useState<string[]>([]);
@@ -226,14 +228,27 @@ export const ApkBuilderModal: React.FC<ApkBuilderModalProps> = ({
               </button>
             </div>
 
-            <button
-              type="button"
-              onClick={onOpenCodeViewer}
-              className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5"
-            >
-              <FileCode className="w-3.5 h-3.5" />
-              <span>Inspect Source Files</span>
-            </button>
+            <div className="flex items-center gap-3">
+              {onOpenWorkflowModal && (
+                <button
+                  type="button"
+                  onClick={onOpenWorkflowModal}
+                  className="px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-xs font-semibold text-purple-300 flex items-center gap-1.5 transition-colors"
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Workflow Actions (CI/CD)</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={onOpenCodeViewer}
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1.5"
+              >
+                <FileCode className="w-3.5 h-3.5" />
+                <span>Inspect Source Files</span>
+              </button>
+            </div>
           </div>
 
           {/* Progress Bar */}

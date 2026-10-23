@@ -7,6 +7,7 @@ import { DeviceSimulator } from './components/DeviceSimulator';
 import { IQManagerConfigPanel } from './components/IQManagerConfigPanel';
 import { ApkBuilderModal } from './components/ApkBuilderModal';
 import { AndroidCodeViewer } from './components/AndroidCodeViewer';
+import { WorkflowActionModal } from './components/WorkflowActionModal';
 import { generateAndDownloadZip } from './utils/androidProjectCode';
 import {
   Keyboard,
@@ -18,6 +19,7 @@ import {
   Smartphone,
   Shield,
   Zap,
+  GitBranch,
 } from 'lucide-react';
 
 export default function App() {
@@ -70,6 +72,7 @@ export default function App() {
   // Modals state
   const [isApkModalOpen, setIsApkModalOpen] = useState(false);
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+  const [isWorkflowModalOpen, setIsWorkflowModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -132,6 +135,15 @@ export default function App() {
             Kotlin Architecture
           </button>
 
+          <button
+            type="button"
+            onClick={() => setIsWorkflowModalOpen(true)}
+            className="hover:text-purple-600 dark:hover:text-purple-400 text-purple-600 dark:text-purple-400 font-semibold transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5"
+          >
+            <GitBranch className="w-3.5 h-3.5" />
+            <span>Workflow Actions</span>
+          </button>
+
           <a
             href="https://github.com/Gautier7799/iOS-Keyboard-Studio-APK"
             target="_blank"
@@ -139,7 +151,7 @@ export default function App() {
             className="hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold"
           >
             <Github className="w-3.5 h-3.5" />
-            <span>iOS Keyboard Studio APK</span>
+            <span>Studio APK Repo</span>
           </a>
 
           <a
@@ -188,7 +200,15 @@ export default function App() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsWorkflowModalOpen(true)}
+              className="px-3.5 py-2 text-xs font-semibold rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 transition-colors flex items-center gap-1.5 shadow-sm"
+            >
+              <GitBranch className="w-3.5 h-3.5" />
+              <span>Workflow Actions</span>
+            </button>
             <button
               type="button"
               onClick={handleDownloadZip}
@@ -367,6 +387,10 @@ export default function App() {
           setIsApkModalOpen(false);
           setIsCodeModalOpen(true);
         }}
+        onOpenWorkflowModal={() => {
+          setIsApkModalOpen(false);
+          setIsWorkflowModalOpen(true);
+        }}
       />
 
       <AndroidCodeViewer
@@ -374,6 +398,12 @@ export default function App() {
         isOpen={isCodeModalOpen}
         onClose={() => setIsCodeModalOpen(false)}
         onDownloadZip={handleDownloadZip}
+      />
+
+      <WorkflowActionModal
+        config={androidConfig}
+        isOpen={isWorkflowModalOpen}
+        onClose={() => setIsWorkflowModalOpen(false)}
       />
     </div>
   );
