@@ -1,0 +1,6 @@
+{
+  "name": "IQKeyboard Pro - iOS Keyboard & Android 17 Compose APK Builder",
+  "description": "Professional iOS 17 Keyboard & IQKeyboardManager Interactive Suite, real-time insets handling, Arabic/English keyboard, and ready-to-compile Android 17 Jetpack Compose APK project generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
